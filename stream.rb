@@ -34,13 +34,14 @@ end
 
 def print_html(chr, out)
   if chr == "\n"
-    out.print '<br>'
+    out.print '<br /><br />'
   end
 end
 
 def output_stream(array)
   idx = 0
   stream do |out|
+    out.puts erb :top
     loop do
       break if idx == array.size
       out.print array[idx]
@@ -51,8 +52,16 @@ def output_stream(array)
   end
 end
 
+def clean(text)
+  text = text.gsub(/(\b|)\n\b/, ' ')
+  text.gsub(/\B\n\b/, "\n")
+end
+
 get '/stream' do
-  text = File.read(data_path + '/history.txt')
+  text = File.read(data_path + '/text.txt')
+  text = clean(text)
   characters = text.chars
   output_stream(characters)
+
+  # p text[0..5000]
 end
